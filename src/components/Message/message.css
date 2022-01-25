@@ -1,0 +1,10 @@
+.message{
+    background-color: lightgreen;
+    width: 150px;
+    padding:4px;
+    border-radius: 8px;
+}
+
+.message__text{
+    font-size: 16px;
+}
