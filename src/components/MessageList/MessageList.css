@@ -1,0 +1,8 @@
+.list{
+
+    height: 420px;
+    justify-content: space-between;
+    overflow:auto;
+    border:1px solid black;
+    padding:15px;
+}
