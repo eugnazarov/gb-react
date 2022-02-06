@@ -5,8 +5,8 @@ import Message from "../Message/Message";
 const MessageList = ({ messageList }) => {
   return (
     <div className="list">
-      {messageList.map(({ text, author }) => (
-        <Message text={text} />
+      {messageList.map(({ text, author, id }) => (
+        <Message author={author} key={id} text={text} />
       ))}
     </div>
   );
