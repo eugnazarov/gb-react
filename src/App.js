@@ -20,10 +20,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (
-      messageList[messageList.length - 1] &&
-      messageList[messageList.length - 1].author !== "robot"
-    ) {
+    if (messageList[messageList.length - 1]?.author !== "robot") {
       const newMessage = {
         author: "robot",
         text: "Hello from robot",
@@ -41,7 +38,7 @@ const App = () => {
         <input
           style={{ padding: "10px", margin: "10px" }}
           value={input.value}
-          onChange={({ target }) => input.setValue(target.value)}
+          onChange={input.onChange}
         />
       </form>
     </div>
