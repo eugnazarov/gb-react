@@ -4,8 +4,23 @@
     padding:4px;
     border-radius: 8px;
     margin-bottom: 12px;
+    margin-left: auto;
+
 }
 
 .message__text{
     font-size: 16px;
+}
+.message__author{
+    font-size: 12px;
+}
+
+.message--robot{
+    background-color:lightcoral;
+    width: 150px;
+    padding:4px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+
+
 }
