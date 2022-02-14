@@ -1,19 +1,14 @@
 import React from "react";
 
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { Box, List, ListItem, ListItemButton } from "@mui/material";
+import { Link } from "react-router-dom";
 const Chats = ({ chats }) => (
   <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
     <List>
-      {chats.map((chat) => (
+      {Object.keys(chats).map((id) => (
         <ListItem>
           <ListItemButton>
-            <ListItemText primary={chat.name} />
+            <Link to={`/${id}`}>{chats[id].name}</Link>
           </ListItemButton>
         </ListItem>
       ))}
