@@ -10,7 +10,7 @@ export const ProfileReducer = (state = INITIAL_STATE, action) => {
       return { ...state, isChecked: !state.isChecked };
     }
     default: {
-      return { ...state };
+      return state;
     }
   }
 };
