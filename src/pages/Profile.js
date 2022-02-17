@@ -2,20 +2,21 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Checkbox } from "@mui/material";
 import { TOGGLE } from "../store/profile/types";
+import { isChecked } from "../store/profile/selectors";
 
 const Profile = () => {
-  const { isChecked } = useSelector((state) => state.profile);
+  const checked = useSelector(isChecked);
   const dispatch = useDispatch();
   return (
     <div>
       <p>Profile Page</p>
       <Checkbox
-        value={isChecked}
+        value={checked}
         onChange={() => {
           dispatch({ type: TOGGLE });
         }}
       />
-      <p>{isChecked.toString()}</p>
+      <p>{checked.toString()}</p>
     </div>
   );
 };
