@@ -1,7 +1,7 @@
 import MessageList from "../../components/MessageList/MessageList";
 import { FormControl, IconButton, Input, InputAdornment } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import useInput from "../../components/hooks/useInput";
 
 import "./Chat.css";
@@ -9,6 +9,7 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { chats } from "../../store/chats/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_MESSAGE } from "../../store/chats/types";
+import { addMessageWithThunk } from "../../store/chats/actions";
 
 const Chat = () => {
   const inputRef = useRef(null);
@@ -21,31 +22,9 @@ const Chat = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (chatList[id]) {
-      if (
-        chatList[id].messages[chatList[id].messages.length - 1]?.author !==
-          "robot" &&
-        !!chatList[id].messages.length
-      ) {
-        const newMessage = {
-          author: "robot",
-          text: "Hello from robot",
-          id: `robot__${Date.now()}`,
-        };
-        setTimeout(() => {
-          dispatch({
-            type: ADD_MESSAGE,
-            payload: {
-              id,
-              message: newMessage,
-            },
-          });
-          inputRef.current.focus();
-        }, 500);
-      }
-    }
-  }, [chatList]);
+  const onAddMessage = (message) => {
+    dispatch(addMessageWithThunk(id, message));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,6 +43,7 @@ const Chat = () => {
     });
 
     input.setValue("");
+    onAddMessage(newMessage);
   };
 
   if (!chatList[id]) {
