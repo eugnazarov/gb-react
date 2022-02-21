@@ -1,13 +1,13 @@
-import { ADD_CHAT, ADD_MESSAGE } from "./types";
+import { ADD_CHAT, ADD_MESSAGE, DELETE_CHAT } from "./types";
 
 const INITIAL_STATE = {
   chats: {
     id1: {
-      name: "Chat1",
+      name: "id1",
       messages: [{ text: "FirstMessage", id: 0, author: "robot" }],
     },
     id2: {
-      name: "Chat2",
+      name: "id2",
       messages: [{ text: "FirstMessageHereToo!", id: 0, author: "robot" }],
     },
   },
@@ -40,6 +40,18 @@ export const chatReducer = (state = INITIAL_STATE, action) => {
             messages: [],
           },
         },
+      };
+    }
+    case DELETE_CHAT: {
+      return {
+        ...state,
+
+        chats: Object.fromEntries(
+          Object.entries(state.chats).filter((ch) => {
+            console.log(ch);
+            return ch[0] !== action.payload.id;
+          })
+        ),
       };
     }
     default: {
