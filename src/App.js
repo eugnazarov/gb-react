@@ -5,26 +5,20 @@ import "./App.css";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat/Chat";
+import { chats } from "./store/chats/selectors";
+import { useSelector } from "react-redux";
+import NoChat from "./pages/NoChat";
 
 const App = () => {
-  const chats = {
-    id1: {
-      name: "Chat1",
-      messages: [{ text: "FirstMessage", author: "robot" }],
-    },
-    id2: {
-      name: "Chat2",
-      messages: [{ text: "FirstMessageHereToo!", author: "robot" }],
-    },
-  };
-
+  const chatList = useSelector(chats);
   return (
     <div className="App">
       <Router>
         <Routes>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/:id" element={<Chat chats={chats} />} />
-          <Route exact path="/" element={<Home chats={chats} />} />
+          <Route path="/:id" element={<Chat />} />
+          <Route exact path="/" element={<Home />} />
+          <Route path="/nochat" element={<NoChat />} />
         </Routes>
       </Router>
     </div>

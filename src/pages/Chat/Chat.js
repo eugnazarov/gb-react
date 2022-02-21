@@ -1,39 +1,51 @@
 import MessageList from "../../components/MessageList/MessageList";
 import { FormControl, IconButton, Input, InputAdornment } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import useInput from "../../components/hooks/useInput";
-import Chats from "../../components/Chats/Chats";
 
 import "./Chat.css";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate, Link } from "react-router-dom";
+import { chats } from "../../store/chats/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { ADD_MESSAGE } from "../../store/chats/types";
 
-const Chat = ({ chats }) => {
+const Chat = () => {
   const inputRef = useRef(null);
 
   const input = useInput();
 
   const { id } = useParams();
 
-  const messageList = chats[id].messages;
+  const chatList = useSelector(chats);
 
-  ///костыль для ререндера
-  const [val, setVal] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (messageList[messageList.length - 1]?.author !== "robot") {
-      const newMessage = {
-        author: "robot",
-        text: "Hello from robot",
-        id: `robot__${Date.now()}`,
-      };
-      setTimeout(() => {
-        messageList.push(newMessage);
-        setVal((p) => !p);
-        inputRef.current.focus();
-      }, 500);
+    if (chatList[id]) {
+      if (
+        chatList[id].messages[chatList[id].messages.length - 1]?.author !==
+          "robot" &&
+        !!chatList[id].messages.length
+      ) {
+        const newMessage = {
+          author: "robot",
+          text: "Hello from robot",
+          id: `robot__${Date.now()}`,
+        };
+        setTimeout(() => {
+          dispatch({
+            type: ADD_MESSAGE,
+            payload: {
+              id,
+              message: newMessage,
+            },
+          });
+          inputRef.current.focus();
+        }, 500);
+      }
     }
-  }, [chats[id].messages.length]);
+  }, [chatList]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,16 +55,25 @@ const Chat = ({ chats }) => {
       text: input.value,
       id: `human__${Date.now()}`,
     };
-    messageList.push(newMessage);
+    dispatch({
+      type: ADD_MESSAGE,
+      payload: {
+        id,
+        message: newMessage,
+      },
+    });
 
     input.setValue("");
   };
 
+  if (!chatList[id]) {
+    return <Navigate to="/" />;
+  }
   return (
     <div className="wrapper">
-      <Chats chats={chats} />
       <div>
-        <MessageList messageList={messageList} />
+        <Link to={`/home`}>Home</Link>
+        <MessageList messageList={chatList[id].messages} />
         <FormControl sx={{ m: 5, width: "35ch" }} variant="outlined">
           <Input
             inputRef={inputRef}
