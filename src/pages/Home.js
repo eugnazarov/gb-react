@@ -9,6 +9,7 @@ const Home = () => {
   return (
     <div>
       <Link to="/profile">Profile</Link>
+      <Link to="/posts">Api Posts</Link>
       <Chats chats={chatList} />
     </div>
   );
