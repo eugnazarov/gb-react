@@ -1,7 +1,7 @@
 import MessageList from "../../components/MessageList/MessageList";
 import { FormControl, IconButton, Input, InputAdornment } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import useInput from "../../components/hooks/useInput";
 
 import "./Chat.css";
@@ -9,8 +9,12 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { chats } from "../../store/chats/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_MESSAGE } from "../../store/chats/types";
-import { addMessageWithThunk } from "../../store/chats/actions";
+import firebase from "firebase/app";
 
+import { getDatabase, ref, set, onValue } from "firebase/database";
+import { app } from "../../services/firebase";
+
+const db = getDatabase(app);
 const Chat = () => {
   const inputRef = useRef(null);
 
@@ -22,11 +26,33 @@ const Chat = () => {
 
   const dispatch = useDispatch();
 
-  const onAddMessage = (message) => {
-    dispatch(addMessageWithThunk(id, message));
+  // const onAddMessage = (message) => {
+  //   dispatch(addMessageWithThunk(id, message));
+  // };
+
+  const [messages, setMessages] = useState([]);
+
+  const onAddMessage = async (message) => {
+    const r = ref(db, `messages/${id}/${message.id}`);
+    await set(r, message);
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const r = ref(db, "messages/" + id);
+
+    onValue(r, (snapshot) => {
+      const newMessages = [];
+
+      snapshot.forEach((entry) => {
+        newMessages.push(entry.val());
+      });
+
+      setMessages(newMessages);
+      console.log(messages);
+    });
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newMessage = {
@@ -43,7 +69,7 @@ const Chat = () => {
     });
 
     input.setValue("");
-    onAddMessage(newMessage);
+    await onAddMessage(newMessage);
   };
 
   if (!chatList[id]) {
@@ -53,7 +79,7 @@ const Chat = () => {
     <div className="wrapper">
       <div>
         <Link to={`/home`}>Home</Link>
-        <MessageList messageList={chatList[id].messages} />
+        <MessageList messageList={messages} />
         <FormControl sx={{ m: 5, width: "35ch" }} variant="outlined">
           <Input
             inputRef={inputRef}
